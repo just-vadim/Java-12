@@ -2,6 +2,10 @@ package ru.netology.repository;
 
 import ru.netology.domain.Product;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ProductRepository {
   private Product[] items = new Product[0];
 
@@ -18,25 +22,38 @@ public class ProductRepository {
     return items;
   }
 
-  public Product findById(int id) {
+  public Product[] findById(int id) {
+    Product[] result = new Product[0];
+    int index = 0;
     for (Product item : items) {
       if (item.getId() == id) {
-        return item;
+        int length = result.length + 1;
+        Product[] tmp = new Product[length];
+        int lastIndex = tmp.length - 1;
+        tmp[lastIndex] = items[index];
+        result = tmp;
       }
+      index++;
     }
-    return null;
+    if (result.length == 0){
+      return null;
+    }
+    else {
+      return result;
+    }
   }
 
   public void removeById(int id) {
-    int length = items.length - 1;
-    Product[] tmp = new Product[length];
-    int index = 0;
-    for (Product item : items) {
-      if (item.getId() != id) {
-        tmp[index] = item;
-        index++;
-      }
+    List<Product> list = new ArrayList<>(Arrays.asList(items));
+    Product[] removingItem = findById(id);
+    if (removingItem == null){
+      return;
     }
-    items = tmp;
+    list.remove(removingItem[0]);
+    Product[] result = new Product[list.size()];
+    for (int i = 0; i < list.size(); i++) {
+      result[i] = list.get(i);
+    }
+    items = result;
   }
 }
